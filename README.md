@@ -12,4 +12,10 @@ A continuación se hara un listado de los comandos para realizar la instalación
 python3 -m pip install tweepy
 python3 -m pip install pandas
 ```
-**Nota** el comando python3 debe de ser introducido de la manera en que se declaro para tus variables de entorno
+**Nota:** el comando python3 debe de ser introducido de la manera en que se declaro para tus variables de entorno ya que este puede cambiar
+
+## Como ejecutarlo
+```bash
+python3 descargaTweets.py
+```
+**Nota:** el comando python3 debe de ser introducido de la manera en que se declaro para tus variables de entorno ya que este puede cambiar
