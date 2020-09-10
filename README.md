@@ -10,7 +10,6 @@ Pip
 A continuación se hara un listado de los comandos para realizar la instalación de los modulos necesarios
 ```bash
 python3 -m pip install tweepy
-python3 -m pip install pandas
 ```
 **Nota:** el comando python3 debe de ser introducido de la manera en que se declaro para tus variables de entorno ya que este puede cambiar
 
