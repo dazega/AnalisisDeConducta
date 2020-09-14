@@ -17,7 +17,8 @@ def connection():
 
 def main():
   #Terms and date that will work as a Filter
-  search_words = ['#UAA']
+  # search_words = ['abusar','acoso','agresor','aislamiento','alarma','aprovecharse','depresión','desconfianza']
+  search_words = ['bully']
   date_since = '2018-11-16'
   amount_of_results = 5
 
@@ -29,7 +30,9 @@ def main():
   if option:
     amount_of_results = int(input('Cuantos registros va a querer: '))
   
-  date_since = input('Introduce la fecha de inicio en la que se va a hacer la búsqueda de tweets (Formato yyyy-mm-dd): ')
+  option = int(input(f'Deseas introducir la fecha de inicio para la búsqueda 1-Si 0-No (Defecto 2018-11-16): '))
+  if option:
+    date_since = input('Introduce la fecha de inicio en la que se va a hacer la búsqueda de tweets (Formato yyyy-mm-dd): ')
 
   print('\n\nInicializando conexión con Twitter API')
   api = connection()
@@ -42,7 +45,8 @@ def main():
   tweets = tw.Cursor(api.search,
                 q=search_words,
                 lang="en",
-                since=date_since).items(amount_of_results)
+                since=date_since
+            ).items(amount_of_results)
 
   csvRow = 'Autor;Texto;Fecha;Pais;Ciudad\n'
 
@@ -58,7 +62,7 @@ def main():
       country = tweet["place"]["country"]
       city = tweet['place']['name']
     csvRow+= f'{tweet["user"]["name"]};{tweet["text"]};{tweet["created_at"]};{country};{city}\n'
-  archivo = open('tweets.csv', "w")
+  archivo = open('tweets.csv', "w", encoding='utf-8')
   archivo.writelines(csvRow)
   archivo.close()
 
