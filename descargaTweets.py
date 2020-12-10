@@ -1,6 +1,13 @@
 #Libraries
 import os
 import tweepy as tw
+import re
+import nltk
+import cleantext
+
+import csv
+
+#nltk.download('stopwords')
 
 #API KEYS (Don't Share with anyone)
 consumer_key= 'f6u2qHFTUmJdP6R8p7cpdC74z'
@@ -48,22 +55,60 @@ def main():
                 since=date_since
             ).items(amount_of_results)
 
-  csvRow = 'Autor;Texto;Fecha;Pais;Ciudad\n'
+  # fileExist = os.path.exists('tweets.csv')
 
-  # Iterate and print tweets
-  for index, tweet in enumerate(tweets):
-    #Assing to the variable tweet the object json that tweet has so we can use it as a dictonary 
-    tweet = tweet._json
-    print(f'Procesado tweet {index+1} de {amount_of_results}')
-    country = 'None'
-    city = 'None'
-    #Validation that help us to know if the tweet has de information of the location
-    if tweet["place"] != None:
-      country = tweet["place"]["country"]
-      city = tweet['place']['name']
-    csvRow+= f'{tweet["user"]["name"]};{tweet["text"]};{tweet["created_at"]};{country};{city}\n'
-  archivo = open('tweets.csv', "w", encoding='utf-8')
-  archivo.writelines(csvRow)
-  archivo.close()
+  # csvRow = ''
+  # csvRaw = ''
+
+  # if not fileExist:
+  #   csvRow = 'id;created_at;text;retweet_count;favorite_count\n'
+
+  with open('tweets.csv', "+a", newline='',encoding='utf-8') as tweetsFile:
+    tweet_writer = csv.writer(tweetsFile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    tweet_writer.writerow(['id','created_at','text','retweet_count','favorite_count'])
+    # Iterate and print tweets
+    for index, tweet in enumerate(tweets):
+      #Assing to the variable tweet the object json that tweet has so we can use it as a dictonary 
+      tweet = tweet._json
+      tweet_writer.writerow([tweet["id"],tweet["created_at"],tweet["text"],tweet["retweet_count"],tweet["favorite_count"]])
+
+  # if fileExist:
+  #   archivo = 
+  #   archivo.writelines(csvRow)
+  #   archivo.close()
+  # else:
+  #   archivo = open('tweets.csv', "w", encoding='utf-8')
+  #   archivo.writelines(csvRow)
+  #   archivo.close()
+
+#Function that cleans the string it deletes special characters and contractions
+def cleaner(text):
+  text = delSomeCharacters(text)
+  text = delEmojis(text)
+  return text
+
+#Function that deletes the emojis from the string 
+def delEmojis(text):
+  regrex_pattern = re.compile(pattern="["
+                              u"\U0001F600-\U0001F64F"  # emoticons
+                              u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                              u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                              u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                              "]+", flags=re.UNICODE)
+  return regrex_pattern.sub(r'', text)
+
+def delSomeCharacters(text):
+  text = cleantext.clean(text, all= True)
+  # text = text.lower()
+  #Replacing all de url that could have the tweet
+  # text = text.replace(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '')
+  #Remove all characters that are not letters from the string
+  # text = ''.join([i for i in text if not i.isdigit()])
+  # text = text.replace(';','')
+  # text = text.replace('.','')
+  # text = text.replace(',','')
+  # text = text.replace('#', '')
+  # text = re.sub(r'\W+', ' ', text)
+  return text
 
 main()
